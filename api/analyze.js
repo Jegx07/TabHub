@@ -1,11 +1,11 @@
 const fs = require("fs");
 const path = require("path");
-const sharp = require("sharp");
 
 const root = path.join(__dirname, "..");
 const catalog = JSON.parse(fs.readFileSync(path.join(root, "medicine_metadata.json"), "utf8"));
 
 async function signature(buffer) {
+  const sharp = require("sharp");
   const { data } = await sharp(buffer)
     .resize(64, 64, { fit: "fill" })
     .grayscale()
