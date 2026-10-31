@@ -4,6 +4,16 @@
     { "src": "api/analyze.py", "use": "@vercel/python" },
     { "src": "index.html", "use": "@vercel/static" }
   ],
+  "functions": {
+    "api/analyze.py": {
+      "includeFiles": [
+        "mediscan_core.py",
+        "medicine_metadata.json",
+        "medicine_database/**",
+        "reference_images/**"
+      ]
+    }
+  },
   "routes": [
     { "src": "/api/(.*)", "dest": "/api/analyze.py" },
     { "src": "/(.*)", "dest": "/index.html" }
