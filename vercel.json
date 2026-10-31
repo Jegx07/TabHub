@@ -8,7 +8,7 @@
     "api/analyze.js": {
       "includeFiles": [
         "medicine_metadata.json",
-        "reference_images/**"
+        "reference_images/**/*"
       ]
     }
   },
