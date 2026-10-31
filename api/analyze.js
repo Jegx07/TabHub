@@ -83,7 +83,6 @@ module.exports = async function handler(req, res) {
     if (exactId && catalog[exactId]) {
       return res.status(200).json({ report: reportFor(catalog[exactId], 100) });
     }
-    const catalog = JSON.parse(fs.readFileSync(path.join(root, "medicine_metadata.json"), "utf8"));
     const target = await signature(image);
     const matches = [];
     for (const [medicineId, record] of Object.entries(catalog)) {
