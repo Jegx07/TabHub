@@ -1,5 +1,1 @@
 Pillow
-numpy
-opencv-python-headless
-requests
-rapidfuzz
