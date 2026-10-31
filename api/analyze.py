@@ -5,9 +5,6 @@ import json
 from http.server import BaseHTTPRequestHandler
 from pathlib import Path
 
-from PIL import Image, ImageOps
-
-
 ROOT = Path(__file__).resolve().parent.parent
 METADATA_PATH = ROOT / "medicine_metadata.json"
 MAX_REQUEST_BYTES = 12 * 1024 * 1024
@@ -19,6 +16,8 @@ def load_catalog():
 
 
 def image_signature(image):
+    from PIL import ImageOps
+
     normalized = ImageOps.fit(image.convert("RGB"), (64, 64))
     return list(normalized.convert("L").getdata())
 
@@ -106,6 +105,8 @@ class handler(BaseHTTPRequestHandler):
 
     def do_POST(self):
         try:
+            from PIL import Image
+
             length = int(self.headers.get("content-length", "0"))
             if length <= 0 or length > MAX_REQUEST_BYTES:
                 self._send(413, {"error": "Image request must be between 1 byte and 12 MB."})
