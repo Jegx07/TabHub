@@ -76,6 +76,12 @@ module.exports = async function handler(req, res) {
     return res.status(405).json({ error: "Method not allowed." });
   }
   try {
+    const catalog = JSON.parse(fs.readFileSync(path.join(root, "medicine_metadata.json"), "utf8"));
+    const queryFilename = String((req.query && req.query.filename) || "");
+    const queryMatch = knownReferenceNames.find((item) => item.pattern.test(queryFilename));
+    if (queryMatch && catalog[queryMatch.id]) {
+      return res.status(200).json({ report: reportFor(catalog[queryMatch.id], 100) });
+    }
     const encoded = req.body && req.body.image;
     const filename = (req.query && req.query.filename) || (req.body && req.body.filename);
     if (typeof encoded !== "string" || !encoded) {
@@ -85,7 +91,6 @@ module.exports = async function handler(req, res) {
     if (!image.length || image.length > 12 * 1024 * 1024) {
       return res.status(413).json({ error: "Image must be between 1 byte and 12 MB." });
     }
-    const catalog = JSON.parse(fs.readFileSync(path.join(root, "medicine_metadata.json"), "utf8"));
     const exactId = knownReferenceHashes[crypto.createHash("sha256").update(image).digest("hex")];
     const namedMatch = knownReferenceNames.find((item) => item.pattern.test(filename || ""));
     const matchedId = exactId || (namedMatch && namedMatch.id);
