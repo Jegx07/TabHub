@@ -50,7 +50,10 @@
         });
         const response = await fetch(`/api/analyze?filename=${encodeURIComponent(input.files[0].name)}`, {
           method: "POST",
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "X-Medicine-Filename": input.files[0].name
+          },
           body: JSON.stringify({ image: dataUrl, filename: input.files[0].name })
         });
         const contentType = response.headers.get("content-type") || "";

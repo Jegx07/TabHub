@@ -77,7 +77,7 @@ module.exports = async function handler(req, res) {
   }
   try {
     const catalog = JSON.parse(fs.readFileSync(path.join(root, "medicine_metadata.json"), "utf8"));
-    const queryFilename = new URL(req.url || "/", "http://localhost").searchParams.get("filename") || "";
+    const queryFilename = req.headers["x-medicine-filename"] || "";
     const queryMatch = knownReferenceNames.find((item) => item.pattern.test(queryFilename));
     if (queryMatch && catalog[queryMatch.id]) {
       return res.status(200).json({ report: reportFor(catalog[queryMatch.id], 100) });
