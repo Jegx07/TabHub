@@ -77,7 +77,7 @@ module.exports = async function handler(req, res) {
   }
   try {
     const encoded = req.body && req.body.image;
-    const filename = req.body && req.body.filename;
+    const filename = (req.query && req.query.filename) || (req.body && req.body.filename);
     if (typeof encoded !== "string" || !encoded) {
       return res.status(400).json({ error: "A base64-encoded image is required." });
     }

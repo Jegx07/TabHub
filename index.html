@@ -48,7 +48,7 @@
           reader.onerror = reject;
           reader.readAsDataURL(input.files[0]);
         });
-        const response = await fetch("/api/analyze", {
+        const response = await fetch(`/api/analyze?filename=${encodeURIComponent(input.files[0].name)}`, {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ image: dataUrl, filename: input.files[0].name })
