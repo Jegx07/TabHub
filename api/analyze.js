@@ -77,13 +77,14 @@ module.exports = async function handler(req, res) {
   }
   try {
     const catalog = JSON.parse(fs.readFileSync(path.join(root, "medicine_metadata.json"), "utf8"));
+    const body = typeof req.body === "string" ? JSON.parse(req.body) : (req.body || {});
     const queryFilename = req.headers["x-medicine-filename"] || "";
     const queryMatch = knownReferenceNames.find((item) => item.pattern.test(queryFilename));
     if (queryMatch && catalog[queryMatch.id]) {
       return res.status(200).json({ report: reportFor(catalog[queryMatch.id], 100) });
     }
-    const encoded = req.body && req.body.image;
-    const filename = (req.query && req.query.filename) || (req.body && req.body.filename);
+    const encoded = body.image;
+    const filename = body.filename || "";
     if (typeof encoded !== "string" || !encoded) {
       return res.status(400).json({ error: "A base64-encoded image is required." });
     }
