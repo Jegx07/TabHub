@@ -2,7 +2,6 @@ const fs = require("fs");
 const path = require("path");
 
 const root = path.join(__dirname, "..");
-const catalog = JSON.parse(fs.readFileSync(path.join(root, "medicine_metadata.json"), "utf8"));
 
 async function signature(buffer) {
   const sharp = require("sharp");
@@ -71,6 +70,7 @@ module.exports = async function handler(req, res) {
     if (!image.length || image.length > 12 * 1024 * 1024) {
       return res.status(413).json({ error: "Image must be between 1 byte and 12 MB." });
     }
+    const catalog = JSON.parse(fs.readFileSync(path.join(root, "medicine_metadata.json"), "utf8"));
     const target = await signature(image);
     const matches = [];
     for (const [medicineId, record] of Object.entries(catalog)) {
