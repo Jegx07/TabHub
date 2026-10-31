@@ -1,6 +1,6 @@
 {
   "functions": {
-    "api/analyze.py": {
+    "api/analyze.js": {
       "includeFiles": [
         "mediscan_core.py",
         "medicine_metadata.json",
