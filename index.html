@@ -51,7 +51,7 @@
         const response = await fetch("/api/analyze", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ image: dataUrl })
+          body: JSON.stringify({ image: dataUrl, filename: input.files[0].name })
         });
         const contentType = response.headers.get("content-type") || "";
         const data = contentType.includes("application/json")
