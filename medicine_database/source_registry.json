@@ -1,0 +1,93 @@
+{
+  "sources": [
+    {
+      "source_id": "SOURCE_A_RXNORM",
+      "name": "RxNorm – National Library of Medicine",
+      "owner": "U.S. National Library of Medicine (NLM), National Institutes of Health (NIH)",
+      "terms_and_license": "Free for use in non-commercial and commercial systems; subject to UMLS licensing terms for third-party vocabularies.",
+      "geographical_coverage": "United States standardized clinical drug concepts with international generic mapping.",
+      "update_frequency": "Monthly full releases, weekly concept updates.",
+      "api_requirements": "Public REST API (https://rxnav.nlm.nih.gov/REST). No API key required for core concept lookups.",
+      "endpoints": {
+        "drugs": "https://rxnav.nlm.nih.gov/REST/drugs.json?name={name}",
+        "rxcui_properties": "https://rxnav.nlm.nih.gov/REST/rxcui/{rxcui}/properties.json",
+        "related": "https://rxnav.nlm.nih.gov/REST/rxcui/{rxcui}/allrelated.json",
+        "interactions": "https://rxnav.nlm.nih.gov/REST/interaction/interaction.json?rxcui={rxcui}"
+      },
+      "usage_method": "Direct REST HTTP GET with JSON response parsing and local caching."
+    },
+    {
+      "source_id": "SOURCE_B_OPENFDA",
+      "name": "openFDA Drug Product Registry & Adverse Events",
+      "owner": "U.S. Food and Drug Administration (FDA)",
+      "terms_and_license": "Public domain (Creative Commons CC0 1.0 Universal equivalent). Open Government Data.",
+      "geographical_coverage": "United States FDA approved pharmaceuticals, over-the-counter drugs, and imported products.",
+      "update_frequency": "Weekly to quarterly depending on endpoint.",
+      "api_requirements": "Public REST API (https://api.fda.gov/drug/). Optional OPENFDA_API_KEY for higher query limits.",
+      "endpoints": {
+        "label": "https://api.fda.gov/drug/label.json?search=openfda.generic_name:\"{name}\"+openfda.brand_name:\"{name}\"&limit=1",
+        "ndc": "https://api.fda.gov/drug/ndc.json?search=generic_name:\"{name}\"&limit=1",
+        "enforcement": "https://api.fda.gov/drug/enforcement.json?search=product_description:\"{name}\"&limit=1",
+        "adverse_events": "https://api.fda.gov/drug/event.json?search=patient.drug.medicinalproduct:\"{name}\"&limit=1"
+      },
+      "usage_method": "Direct REST HTTP GET with structured parameter filtering. Adverse event frequency does not indicate clinical causation."
+    },
+    {
+      "source_id": "SOURCE_C_DAILYMED",
+      "name": "DailyMed Structured Product Labels",
+      "owner": "U.S. National Library of Medicine (NLM) in collaboration with the FDA",
+      "terms_and_license": "Public domain official U.S. government pharmaceutical labeling.",
+      "geographical_coverage": "United States approved prescription, OTC, and biological products.",
+      "update_frequency": "Daily / weekly updates upon new manufacturer submissions.",
+      "api_requirements": "Public REST API (https://dailymed.nlm.nih.gov/dailymed/services/v2/). No API key required.",
+      "endpoints": {
+        "spls": "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls.json?drug_name={name}",
+        "packaging": "https://dailymed.nlm.nih.gov/dailymed/services/v2/spls/{setid}/packaging.json"
+      },
+      "usage_method": "REST HTTP GET with JSON parsing for structured labeling monographs."
+    },
+    {
+      "source_id": "SOURCE_D_PUBCHEM",
+      "name": "NCBI PubChem Chemical & Pharmacology Database",
+      "owner": "National Center for Biotechnology Information (NCBI), National Library of Medicine",
+      "terms_and_license": "Public domain chemical registry; individual data contributions respect source terms.",
+      "geographical_coverage": "Global chemical compounds, bioassays, and active pharmaceutical substances.",
+      "update_frequency": "Continuous updates.",
+      "api_requirements": "PubChem PUG REST API (https://pubchem.ncbi.nlm.nih.gov/rest/pug/). No API key required. Rate limited to 5 req/sec.",
+      "endpoints": {
+        "compound_property": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{name}/property/MolecularFormula,MolecularWeight,IUPACName,CanonicalSMILES/JSON",
+        "compound_description": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/name/{name}/description/JSON"
+      },
+      "usage_method": "PUG REST GET queries with exponential backoff and caching."
+    },
+    {
+      "source_id": "SOURCE_E_INDIAN_PHARMA",
+      "name": "Indian Pharmaceutical Regulatory & Manufacturer Catalog",
+      "owner": "Central Drugs Standard Control Organisation (CDSCO), Ministry of Health & Family Welfare, Govt of India & Official Product Monographs",
+      "terms_and_license": "Public health drug safety schedules (Drugs and Cosmetics Act, 1940 & Rules 1945), official package inserts.",
+      "geographical_coverage": "India (National territory, Schedule H/H1, OTC, and major exports).",
+      "update_frequency": "Periodic gazette updates, CDSCO notices, and manufacturer packaging updates.",
+      "api_requirements": "Curated regulatory indexing, manufacturer official monographs (Sun Pharma, Cipla, Dr. Reddy's, Mankind, Abbott India, Alembic, Torrent, Lupin, Zydus, Intas, Micro Labs).",
+      "endpoints": {
+        "cdsco_portal": "https://cdsco.gov.in/",
+        "local_curated_index": "medicine_database/medicine_metadata.json"
+      },
+      "usage_method": "Structured offline index with online regulatory monograph fallback."
+    },
+    {
+      "source_id": "SOURCE_F_LOCAL_FALLBACK",
+      "name": "MediScan AI Curated Clinical Reference Database",
+      "owner": "MediScan AI Medical Intelligence Engineering Team",
+      "terms_and_license": "Educational and Clinical Decision Support Research License.",
+      "geographical_coverage": "Global & Indian priority pharmaceutical market references.",
+      "update_frequency": "Continuous per application release.",
+      "api_requirements": "Local SQLite cache (medicine_cache.db) and JSON registry (medicine_metadata.json). Zero network dependency.",
+      "endpoints": {
+        "metadata_path": "medicine_database/medicine_metadata.json",
+        "sqlite_cache": "medicine_cache.db"
+      },
+      "usage_method": "Direct zero-latency SQLite query and JSON lookup."
+    }
+  ]
+}
+
